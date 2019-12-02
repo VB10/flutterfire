@@ -1,12 +1,32 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutterfire/core/model/student.dart';
-import 'package:flutterfire/core/model/user.dart';
+import 'package:flutterfire/core/model/user/user_auth_error.dart';
+import 'package:flutterfire/core/model/user/user_request.dart';
 import 'package:http/http.dart' as http;
 
+import '../model/student.dart';
+import '../model/user.dart';
+
 class FirebaseService {
-  static const String FIREBASE_URL = "YOUR_DATABASE_URL";
+  static const String FIREBASE_URL = "https://hwafire-4cae8.firebaseio.com";
+  static const String FIREBASE_AUTH_URL =
+      "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCICtNLCUtDqoITK9i87UAqpo6XeVc-3aI";
+
+
+  Future postUser(UserRequest request) async {
+    var jsonModel = json.encode(request.toJson());
+    final response = await http.post(FIREBASE_AUTH_URL, body: jsonModel);
+
+    switch (response.statusCode) {
+      case HttpStatus.ok:
+        return true;
+      default:
+        var errorJson = json.decode(response.body);
+        var error = FirebaseAuthError.fromJson(errorJson);
+        return error;
+    }
+  }
 
   Future<List<User>> getUsers() async {
     final response = await http.get("$FIREBASE_URL/users.json");
