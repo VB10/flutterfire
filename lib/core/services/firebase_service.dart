@@ -11,7 +11,7 @@ import '../model/user.dart';
 class FirebaseService {
   static const String FIREBASE_URL = "https://hwafire-4cae8.firebaseio.com";
   static const String FIREBASE_AUTH_URL =
-      "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCICtNLCUtDqoITK9i87UAqpo6XeVc-3aI";
+      "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=[YOUR_API_KEY]";
 
 
   Future postUser(UserRequest request) async {
