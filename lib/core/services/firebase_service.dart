@@ -6,13 +6,14 @@ import 'package:flutterfire/core/model/user/user_request.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/student.dart';
+import '../model/student.dart';
+import '../model/student.dart';
 import '../model/user.dart';
 
 class FirebaseService {
   static const String FIREBASE_URL = "https://hwafire-4cae8.firebaseio.com";
   static const String FIREBASE_AUTH_URL =
       "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=[YOUR_API_KEY]";
-
 
   Future postUser(UserRequest request) async {
     var jsonModel = json.encode(request.toJson());
@@ -58,6 +59,20 @@ class FirebaseService {
           studentList.add(student);
         });
         return studentList;
+
+      default:
+        return Future.error(response.statusCode);
+    }
+  }
+
+  Future<Student> getStudent(String key) async {
+    final response = await http.get("$FIREBASE_URL/students/$key.json");
+
+    switch (response.statusCode) {
+      case HttpStatus.ok:
+        final jsonModel = json.decode(response.body) as Map;
+        if (jsonModel == null) throw NullThrownError();
+        return Student.fromJson(jsonModel);
 
       default:
         return Future.error(response.statusCode);
