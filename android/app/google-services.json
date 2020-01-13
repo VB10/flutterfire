@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "308030558666",
+    "firebase_url": "https://hwafire-4cae8.firebaseio.com",
+    "project_id": "hwafire-4cae8",
+    "storage_bucket": "hwafire-4cae8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:308030558666:android:3cd852d22b1ec2dbfdbf33",
+        "android_client_info": {
+          "package_name": "com.example.flutterfire"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "308030558666-qtm21b3vjq4abfhh09il0st7dbabtf3m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutterfire",
+            "certificate_hash": "b5bdd9d0a67e6f21f2ada73266dbf3778fb0d128"
+          }
+        },
+        {
+          "client_id": "308030558666-b91do9kglenjquhmc9lu1csrv74p60sk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUG9m0lcI8EG6ZKb8O3zT3G6OG1_wp6Vw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "308030558666-b91do9kglenjquhmc9lu1csrv74p60sk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
