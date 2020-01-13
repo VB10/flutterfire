@@ -48,8 +48,9 @@ class _LoginViewState extends State<LoginView> {
                       var data = await GoogleSignHelper.instance.signIn();
                       if (data != null) {
                         var userData =
-                            await GoogleSignHelper.instance.googleAuthtencite();
-                        print(userData.accessToken);
+                            await GoogleSignHelper.instance.firebaseSignin();
+                        print(userData);
+                        // print(userData.accessToken);
                         // print(userData.idToken);
                       }
                     },
