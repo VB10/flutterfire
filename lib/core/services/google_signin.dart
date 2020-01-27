@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutterfire/core/helper/shared_manager.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleSignHelper {
@@ -18,6 +19,9 @@ class GoogleSignHelper {
     }
     return null;
   }
+
+  bool get isHaveUser => user == null ? false : true;
+  GoogleSignInAccount get user => _googleSignIn.currentUser;
 
   Future<GoogleSignInAuthentication> googleAuthtencite() async {
     if (await _googleSignIn.isSignedIn()) {
@@ -48,8 +52,9 @@ class GoogleSignHelper {
     final FirebaseUser user =
         (await _auth.signInWithCredential(credential)).user;
     print("signed in " + user.displayName);
-    var token = await user.getIdToken();
-    print(token);
+    var tokenResult = await user.getIdToken();
+    await SharedManager.instance
+        .saveString(SharedKeys.TOKEN, tokenResult.token);
     return user;
   }
 }

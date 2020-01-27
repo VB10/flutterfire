@@ -1,4 +1,6 @@
-class Student {
+import 'package:flutterfire/core/model/base/base_model.dart';
+
+class Student extends BaseModel {
   String key;
   String name;
   int number;
@@ -17,5 +19,10 @@ class Student {
     data['name'] = this.name;
     data['number'] = this.number;
     return data;
+  }
+
+  @override
+  fromJson(Map<String, dynamic> json) {
+    return Student.fromJson(json);
   }
 }

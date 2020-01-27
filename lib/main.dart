@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutterfire/core/helper/shared_manager.dart';
 import 'package:flutterfire/ui/view/authentication/login_view.dart';
+import 'package:flutterfire/ui/view/home/fire_home_view.dart';
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SharedManager.init();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
