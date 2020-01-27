@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutterfire/core/helper/shared_manager.dart';
 import 'package:flutterfire/core/model/student.dart';
 import 'package:flutterfire/core/model/user.dart';
 import 'package:flutterfire/core/services/firebase_service.dart';
+import 'package:flutterfire/core/services/google_signin.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in/widgets.dart';
+import 'package:http/http.dart';
 
 class FireHomeView extends StatefulWidget {
   @override
@@ -19,21 +24,35 @@ class _FireHomeViewState extends State<FireHomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: GoogleSignHelper.instance.user == null
+            ? CircleAvatar()
+            : GoogleUserCircleAvatar(
+                identity: GoogleSignHelper.instance.user,
+              ),
+      ),
       body: studentsBuilder,
     );
   }
 
-  Widget get studentsBuilder => FutureBuilder<List<Student>>(
+  Widget get studentsBuilder => FutureBuilder(
         future: service.getStudents(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              if (snapshot.hasData)
-                return _listStudent(snapshot.data);
-              else
-                return _notFoundWidget;
-              break;
+              if (snapshot.hasData) {
+                if (snapshot.data is List) {
+                  return _listStudent(snapshot.data);
+                } else if (snapshot.data is Response) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) async {
+                    await SharedManager.instance
+                        .saveString(SharedKeys.TOKEN, "");
+                    Navigator.of(context).pop();
+                  });
+                }
+              }
+              return _notFoundWidget;
+
             default:
               return _waitingWidget;
           }
