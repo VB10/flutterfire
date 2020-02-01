@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:lottie/lottie.dart';
 
 import 'model/shop_model.dart';
 import 'shop_view_detail.dart';
@@ -12,13 +13,19 @@ class ShoppingView extends StatefulWidget {
 }
 
 class _ShoppingViewState extends State<ShoppingView> {
+  static RectTween _createRectTween(Rect begin, Rect end) {
+    return MaterialRectCenterArcTween(begin: begin, end: end);
+  }
+
   int _index = 0;
   double height = 100;
   List<Shop> selectedShops = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.black, body: buildPageView(context));
+        // appBar: AppBar(title: Lottie.asset('assets/LottieLogo1.json')),
+        backgroundColor: Colors.black,
+        body: buildPageView(context));
   }
 
   PageController get controller =>
@@ -27,6 +34,7 @@ class _ShoppingViewState extends State<ShoppingView> {
       const Interval(0.0, 0.75, curve: Curves.fastOutSlowIn);
 
   void onPageChange(int index) {
+    print(index);
     setState(() {
       _index = index;
     });
@@ -47,6 +55,41 @@ class _ShoppingViewState extends State<ShoppingView> {
     );
   }
 
+  // Widget _buildHero(BuildContext context, String imageName) {
+  //   return Container(
+  //     width: kMinRadius * 2.0,
+  //     height: kMinRadius * 2.0,
+  //     child: Hero(
+  //       createRectTween: _createRectTween,
+  //       tag: imageName,
+  //       child: RadialExpansion(
+  //         maxRadius: 50,
+  //         child: Photo(
+  //           photo: imageName,
+  //           onTap: () {
+  //             Navigator.of(context).push(
+  //               PageRouteBuilder<void>(
+  //                 pageBuilder: (BuildContext context,
+  //                     Animation<double> animation,
+  //                     Animation<double> secondaryAnimation) {
+  //                   return AnimatedBuilder(
+  //                       animation: animation,
+  //                       builder: (BuildContext context, Widget child) {
+  //                         return Opacity(
+  //                           opacity: opacityCurve.transform(animation.value),
+  //                           child: _buildPage(context, imageName, description),
+  //                         );
+  //                       });
+  //                 },
+  //               ),
+  //             );
+  //           },
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   Widget get footer => AnimatedContainer(
         height: _index == 1 ? 0 : 100,
         duration: Duration(milliseconds: 500),
@@ -62,6 +105,7 @@ class _ShoppingViewState extends State<ShoppingView> {
               itemCount: selectedShops.length,
               itemBuilder: (context, index) => Material(
                 child: Hero(
+                  createRectTween: _createRectTween,
                   child: Card(child: Text("data")),
                   tag: selectedShops[index].description + "add",
                 ),
@@ -102,49 +146,49 @@ class _ShoppingViewState extends State<ShoppingView> {
         return StaggeredTile.fit(1);
       },
       itemBuilder: (context, index) => Card(
-        child: buildHero(data, index),
+        child: buildHero(data[index]),
       ),
     );
   }
 
-  Widget buildHero(List<Shop> data, int index) {
-    return Hero(
-      tag: data[index].description,
-      createRectTween: createRectTween,
-      child: Material(
-        child: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: InkWell(
-            onTap: () => onTap(data[index]),
-            child: buildWrapCard(data[index]),
-          ),
+  Widget buildHero(Shop data) {
+    return Material(
+      child: Padding(
+        padding: EdgeInsets.all(20.0),
+        child: InkWell(
+          onTap: () => onTap(data),
+          child: buildWrapCard(data),
         ),
       ),
     );
   }
 
   Future<void> onTap(Shop data) async {
-    var item = await Navigator.of(context).push(
-        PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) {
-      return AnimatedBuilder(
-          animation: animation,
-          builder: (BuildContext context, Widget child) {
-            return Opacity(
-              opacity: opacityCurve.transform(animation.value),
-              child: ShopDetailView(
-                data: data,
-              ),
-            );
-          });
-    }));
+    Navigator.of(context).push(
+      PageRouteBuilder<void>(
+        pageBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation) {
+          return AnimatedBuilder(
+              animation: animation,
+              builder: (BuildContext context, Widget child) {
+                return Opacity(
+                  opacity: opacityCurve.transform(animation.value),
+                  child: ShopDetailView(
+                    data: data,
+                  ),
+                );
+              });
+        },
+      ),
+    );
 
-    if (item is Shop) {
-      if (!selectedShops
-          .any((param) => param.description == item.description)) {
-        selectedShops.add(item);
-        setState(() {});
-      }
-    }
+    // if (item is Shop) {
+    //   if (!selectedShops
+    //       .any((param) => param.description == item.description)) {
+    //     selectedShops.add(item);
+    //     setState(() {});
+    //   }
+    // }
   }
 
   Widget buildWrapCard(Shop data) {
@@ -154,9 +198,18 @@ class _ShoppingViewState extends State<ShoppingView> {
         direction: Axis.vertical,
         spacing: 20,
         children: <Widget>[
-          Image.network(
-            data.image,
-            fit: BoxFit.fitHeight,
+          Material(
+            child: Hero(
+              tag: data.image + "add",
+              createRectTween: _createRectTween,
+              child: RadialExpansion(
+                maxRadius: 100,
+                child: Image.network(
+                  data.image,
+                  fit: BoxFit.fitHeight,
+                ),
+              ),
+            ),
           ),
           Text("${data.price} \$ "),
           Text(data.description),
